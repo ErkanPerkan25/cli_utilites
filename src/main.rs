@@ -34,18 +34,29 @@ fn main(){
         }
 
         "ls" =>{
-            if args.len() == 1{
+            let path_cur_dir = String::from("./");
+
+            if  args.len() > 2{
+                let paths = env::args().nth(2).unwrap();
+                let path = fs::read_dir(paths).unwrap();
+                for i in path{
+                    println!("{}",i.unwrap().path().display());
+                }
             }
             else{
-
+                let path = fs::read_dir(path_cur_dir).unwrap();
+                for i in path{
+                    println!("{}", i.unwrap().path().display());
+                }
             }
-            //let path = env::args().nth(2).expect("no path given!");
-
+        }
+        "find" =>{
+        }
+        "grep" =>{
+            let word = &args[2];
+            let file = fs::read_to_string(&args[3]).unwrap(); 
         }
         _=> print!("")
     } 
     
-    // Debugging
-    //println!("Command: {}", command);
-    //println!("Options: {}", content);
 }
