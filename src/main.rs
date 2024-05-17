@@ -51,6 +51,14 @@ fn main(){
             }
         }
         "find" =>{
+            let path = &args[2];
+            let options = &args[3];
+            let expression = &args[4];
+
+            if options == "-name"{
+                for i in fs::read_dir(&path).unwrap(){
+                }
+            }
         }
         "grep" =>{
             let word = &args[2];
