@@ -56,7 +56,13 @@ fn main(){
             let expression = &args[4];
 
             if options == "-name"{
-                for i in fs::read_dir(&path).unwrap(){
+                for i in fs::read_dir(&path).unwrap().into_iter(){
+                    let file_name = i.unwrap().file_name();
+                    
+                    if file_name == expression.as_str(){
+                        println!("{}/{}", &path, &file_name.into_string().unwrap());
+                        break;
+                    }
                 }
             }
         }
