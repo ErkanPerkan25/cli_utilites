@@ -1,7 +1,28 @@
 use std::env;
 use std::fs;
+//use std::fs::{self, DirEntry};
+//use std::path::Path;
 
 // enum for commands ?
+/*
+fn visit_dirs(dir: &Path, cb: &dyn Fn(&DirEntry)) -> std::io::Result<()>{
+    if dir.is_dir(){
+        for i in fs::read_dir(dir)?{
+            let entry = i?;
+            let path = entry.path();
+            
+            if path.is_dir(){
+                visit_dirs(&path, cb)?;
+            }
+            else{
+                cb(&entry);
+            }
+        }
+    }
+
+    Ok(())
+}
+*/
 
 fn main(){
     let args: Vec<String> = env::args().collect();
@@ -51,24 +72,51 @@ fn main(){
             }
         }
         "find" =>{
-            let path = &args[2];
-            let options = &args[3];
-            let expression = &args[4];
+            let mut path = ".";
 
-            if options == "-name"{
-                for i in fs::read_dir(&path).unwrap().into_iter(){
-                    let file_name = i.unwrap().file_name();
-                    
-                    if file_name == expression.as_str(){
-                        println!("{}/{}", &path, &file_name.into_string().unwrap());
-                        break;
+            if args.len() == 2{
+                for i in fs::read_dir(&path).unwrap(){
+                    println!("{}", i.unwrap().path().display());
+                }
+                return;
+            }
+            else{
+                path = &args[2];
+
+                let options = &args[3];
+                let expression = &args[4];
+
+                if options == "-type"{
+                    match expression.as_str(){
+                        "f" =>{
+                        }
+                        "d" =>{
+
+                        }
+                        _ =>{
+
+                        }
+                    }
+                }
+
+                if options == "-name"{
+                    for i in fs::read_dir(&path).unwrap().into_iter(){
+                        let file_name = i.unwrap().file_name();
+                        
+                        if file_name == expression.as_str(){
+                            println!("{}/{}", &path, &file_name.into_string().unwrap());
+                            break;
+                        }
                     }
                 }
             }
+
         }
         "grep" =>{
+            /*
             let word = &args[2];
             let file = fs::read_to_string(&args[3]).unwrap(); 
+            */
         }
         _=> print!("")
     } 
