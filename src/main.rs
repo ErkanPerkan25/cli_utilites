@@ -1,30 +1,12 @@
 use std::env;
 use std::fs;
+use std::error::Error;
 //use std::fs::{self, DirEntry};
 //use std::path::Path;
 
 // enum for commands ?
-/*
-fn visit_dirs(dir: &Path, cb: &dyn Fn(&DirEntry)) -> std::io::Result<()>{
-    if dir.is_dir(){
-        for i in fs::read_dir(dir)?{
-            let entry = i?;
-            let path = entry.path();
-            
-            if path.is_dir(){
-                visit_dirs(&path, cb)?;
-            }
-            else{
-                cb(&entry);
-            }
-        }
-    }
 
-    Ok(())
-}
-*/
-
-fn main(){
+fn main() -> Result<(), Box<dyn Error>>{
     let args: Vec<String> = env::args().collect();
 
     let command = &args[1];
@@ -46,12 +28,14 @@ fn main(){
                 }
             }
             println!("{}", content);
+            Ok(())
         }
         "cat" =>{
             let path = env::args().nth(2).expect("no path given!");
             let content = fs::read_to_string(path).expect("Not able to read file!");
 
             println!("{}", content);
+            Ok(())
         }
 
         "ls" =>{
@@ -70,6 +54,7 @@ fn main(){
                     println!("{}", i.unwrap().path().display());
                 }
             }
+            Ok(())
         }
         "find" =>{
             let mut path = ".";
@@ -78,7 +63,7 @@ fn main(){
                 for i in fs::read_dir(&path).unwrap(){
                     println!("{}", i.unwrap().path().display());
                 }
-                return;
+                Ok(())
             }
             else{
                 path = &args[2];
@@ -89,6 +74,9 @@ fn main(){
                 if options == "-type"{
                     match expression.as_str(){
                         "f" =>{
+                            for i in fs::read_dir(&path)?{
+                                let entry = i?;
+                            }
                         }
                         "d" =>{
 
@@ -109,6 +97,7 @@ fn main(){
                         }
                     }
                 }
+                Ok(())
             }
 
         }
@@ -117,8 +106,12 @@ fn main(){
             let word = &args[2];
             let file = fs::read_to_string(&args[3]).unwrap(); 
             */
+            Ok(())
         }
-        _=> print!("")
+        _=> {
+            println!("");
+            Ok(())
+        }
     } 
     
 }
