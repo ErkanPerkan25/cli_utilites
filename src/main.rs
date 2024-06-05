@@ -1,10 +1,47 @@
+#![allow(unused)]
 use std::env;
-use std::fs;
+use std::fs::{self,DirEntry};
 use std::error::Error;
-//use std::fs::{self, DirEntry};
-//use std::path::Path;
+use std::path::Path;
 
-// enum for commands ?
+// listing directory
+fn list_dir (dir: &Path) -> Result<(), Box<dyn Error>>{
+    if dir.is_dir(){
+        for i in fs::read_dir(&dir)?{
+            let entry = i?;
+            let path = entry.path();
+
+            if path.is_dir(){
+                println!("{}", path.display());
+                list_dir(&path)?;
+            }
+        }
+
+    }
+    
+    Ok(())
+}
+
+// listing files
+fn list_files (dir: &Path) -> Result<(), Box<dyn Error>>{
+    if dir.is_dir(){
+        for i in fs::read_dir(&dir)?{
+            let entry = i?;
+            let path = entry.path();
+
+            if path.is_dir(){
+                list_files(&path)?;
+            }
+            else{
+                println!("{}", entry.path().display());
+            }
+        }
+
+    }
+    
+    Ok(())
+}
+
 
 fn main() -> Result<(), Box<dyn Error>>{
     let args: Vec<String> = env::args().collect();
@@ -66,20 +103,18 @@ fn main() -> Result<(), Box<dyn Error>>{
                 Ok(())
             }
             else{
-                path = &args[2];
-
+                //path = &args[2];
+                let dir_path = Path::new(&args[2]);
                 let options = &args[3];
                 let expression = &args[4];
 
                 if options == "-type"{
                     match expression.as_str(){
                         "f" =>{
-                            for i in fs::read_dir(&path)?{
-                                let entry = i?;
-                            }
+                            list_files(&dir_path);
                         }
                         "d" =>{
-
+                            list_dir(&dir_path);
                         }
                         _ =>{
 
