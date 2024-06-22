@@ -42,6 +42,32 @@ fn list_files (dir: &Path) -> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
+fn find_by_name (dir: &Path, name: &String) -> Result<(), Box<dyn Error>>{
+    if dir.is_dir(){
+        for i in fs::read_dir(&dir)?{
+            let entry = i?;
+            let path = entry.path();
+            let _name = name;
+
+            if path.is_dir(){
+                if entry.file_name().into_string() == Ok(_name.to_string()){
+                    println!("{}", path.display());
+                }
+                else{
+                    find_by_name(&path, &_name);
+                }
+            }
+            else{
+                if path.file_name().unwrap().to_str() == Some(_name.as_str()){
+                    println!("{}", path.display());
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
+
 
 fn main() -> Result<(), Box<dyn Error>>{
     let args: Vec<String> = env::args().collect();
@@ -94,17 +120,16 @@ fn main() -> Result<(), Box<dyn Error>>{
             Ok(())
         }
         "find" =>{
-            let mut path = ".";
+            let mut dir_path = Path::new("./");
 
             if args.len() == 2{
-                for i in fs::read_dir(&path).unwrap(){
+                for i in fs::read_dir(&dir_path).unwrap(){
                     println!("{}", i.unwrap().path().display());
                 }
                 Ok(())
             }
             else{
-                //path = &args[2];
-                let dir_path = Path::new(&args[2]);
+                dir_path = Path::new(&args[2]);
                 let options = &args[3];
                 let expression = &args[4];
 
@@ -123,14 +148,7 @@ fn main() -> Result<(), Box<dyn Error>>{
                 }
 
                 if options == "-name"{
-                    for i in fs::read_dir(&path).unwrap().into_iter(){
-                        let file_name = i.unwrap().file_name();
-                        
-                        if file_name == expression.as_str(){
-                            println!("{}/{}", &path, &file_name.into_string().unwrap());
-                            break;
-                        }
-                    }
+                    find_by_name(&dir_path, expression);
                 }
                 Ok(())
             }
