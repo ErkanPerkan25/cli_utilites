@@ -3,6 +3,7 @@ use std::env;
 use std::fs::{self,DirEntry};
 use std::error::Error;
 use std::path::Path;
+use std::io::{self, BufRead, BufReader};
 
 // listing directory
 fn list_dir (dir: &Path) -> Result<(), Box<dyn Error>>{
@@ -65,6 +66,23 @@ fn find_by_name (dir: &Path, name: &String) -> Result<(), Box<dyn Error>>{
         }
     }
 
+    Ok(())
+}
+
+fn grep_word(word: &String, path_to_file: &Path) -> Result<(), Box<dyn Error>>{
+    let file = fs::File::open(path_to_file)?;
+    let reader = BufReader::new(file);
+    let word = word;
+
+    for line in reader.lines(){
+        let x = line?;
+        
+        if x == *word{
+            println!("{:?}", x);
+        }  
+    }
+
+    // bufReader?
     Ok(())
 }
 
@@ -155,10 +173,11 @@ fn main() -> Result<(), Box<dyn Error>>{
 
         }
         "grep" =>{
-            /*
             let word = &args[2];
-            let file = fs::read_to_string(&args[3]).unwrap(); 
-            */
+            let path = Path::new(&args[3]); 
+
+            grep_word(word,path);
+
             Ok(())
         }
         _=> {
