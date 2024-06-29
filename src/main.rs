@@ -72,14 +72,15 @@ fn find_by_name (dir: &Path, name: &String) -> Result<(), Box<dyn Error>>{
 fn grep_word(word: &String, path_to_file: &Path) -> Result<(), Box<dyn Error>>{
     let file = fs::File::open(path_to_file)?;
     let reader = BufReader::new(file);
-    let word = word;
 
     for line in reader.lines(){
-        let x = line?;
-        
-        if x == *word{
-            println!("{:?}", x);
-        }  
+        let entry = line?;
+        for words in entry.split_whitespace(){
+            if words.contains(word.as_str()){
+                println!("{}", entry);
+            }
+
+        }
     }
 
     // bufReader?
@@ -160,7 +161,6 @@ fn main() -> Result<(), Box<dyn Error>>{
                             list_dir(&dir_path);
                         }
                         _ =>{
-
                         }
                     }
                 }
